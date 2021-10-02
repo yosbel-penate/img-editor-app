@@ -6,6 +6,8 @@ import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import Stack from '@mui/material/Stack';
 import SaveIcon from '@mui/icons-material/Save';
+import Viewer from 'react-viewer';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const Input = styled('input')({
   display: 'none',
@@ -20,7 +22,7 @@ class MyEditor extends React.Component {
     scale: 1,
     rotate: 0,
     borderRadius: 0,
-    preview: null,
+    preview: {img:""},
     width: 200,
     height: 200,
   }
@@ -34,9 +36,7 @@ class MyEditor extends React.Component {
     const img = this.editor.getImage().toDataURL();
 
     this.setState({
-      preview: {
-        img
-      }
+      preview: {img}
     });
   }
   
@@ -73,25 +73,25 @@ class MyEditor extends React.Component {
               className="editor-canvas"
             />
             <Box width={300} >
-              <input
-                  name="scale2"
-                  type="range"
-                  onChange={this.handleScale}
-                  min={this.state.allowZoomOut ? '0.1' : '1'}
-                  max="2"
-                  step="0.01"
-                  defaultValue="1"
-              />
+                <input
+                    name="scale2"
+                    type="range"
+                    onChange={this.handleScale}
+                    min={this.state.allowZoomOut ? '0.1' : '1'}
+                    max="2"
+                    step="0.01"
+                    defaultValue="1"
+                />
               <br />
-              <input
-                name="rotate"
-                type="range"
-                onChange={this.handleRotate}
-                min="0"
-                max="180"
-                step="1"
-                defaultValue="0"
-              />
+                <input
+                  name="rotate"
+                  type="range"
+                  onChange={this.handleRotate}
+                  min="0"
+                  max="180"
+                  step="1"
+                  defaultValue="0"
+                />
               <br/>
                 <label htmlFor="icon-button-file">
                   <Input accept="image/*" id="icon-button-file" type="file" onChange={this.handleNewImage}/>
@@ -99,15 +99,26 @@ class MyEditor extends React.Component {
                     <PhotoCamera />
                   </IconButton>
                 </label>
-
                 <label >
                   <Input type="button" onClick={this.handleSave} value="Preview" />
                   <IconButton color="primary" aria-label="Save picture" component="span">
                     <SaveIcon />
                   </IconButton>
                 </label>
-                <br/>
+              <br/>
                 {!!this.state.preview && <img alt="" src={this.state.preview.img} />}
+                <br/>
+                <Viewer
+                  visible={this.state.visible}
+                  onClose={() => { this.setState({visible:false}); } }
+                  images={[{src: this.state.preview.img, alt: ''}]}
+                />
+                <label>
+                  <Input type="button" onClick={() => {this.setState({visible:true});}}/>
+                  <IconButton color="primary" aria-label="Save picture" component="span">
+                    <VisibilityIcon />
+                  </IconButton>
+                </label>
             </Box>
           </div>
     )

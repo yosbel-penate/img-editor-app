@@ -1,11 +1,12 @@
 import React from "react";
 import ReactAvatarEditor from "react-avatar-editor";
-
+import Viewer from 'react-viewer';
 class ImageComposer extends React.Component {
   state = {
     image: "avatar.jpg",
     scale: 1,
-    preview: null
+    preview: null,
+    visible: false
   };
 
   handleNewImage = e => {
@@ -70,6 +71,13 @@ class ImageComposer extends React.Component {
         <input type="button" onClick={this.handleSave} value="Preview" />
         <br />
         {!!this.state.preview && <img src={this.state.preview.img} />}
+        <br />
+        <Viewer
+            visible={this.state.visible}
+            onClose={() => { this.setState({visible:false}); } }
+            images={[{src: this.state.image, alt: ''}]}
+        />
+        <input type="button" onClick={() => { this.setState({visible:true}); } } value="Show" />
       </div>
     );
   }
