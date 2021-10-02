@@ -1,12 +1,20 @@
-import React from 'react'
 import ReactAvatarEditor from 'react-avatar-editor'
 import Box from '@mui/material/Box';
-import Slider from '@mui/material/Slider';
+import * as React from 'react';
+import { styled } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import Stack from '@mui/material/Stack';
+import SaveIcon from '@mui/icons-material/Save';
+
+const Input = styled('input')({
+  display: 'none',
+});
 
 class MyEditor extends React.Component {
 
   state = {
-    image: 'https://pixabay.com/get/gba04cc7484c97dfa7106cd85b0d03471e84d2f47af4a42a9b4c03a6002f2a86e02f7cc685c49d7d91e1b43df9686dbbe660b09a6bc49954f848b6f0305e7f2aa_1280.jpg',
+    image:'https://pixabay.com/get/gba04cc7484c97dfa7106cd85b0d03471e84d2f47af4a42a9b4c03a6002f2a86e02f7cc685c49d7d91e1b43df9686dbbe660b09a6bc49954f848b6f0305e7f2aa_1280.jpg',
     allowZoomOut: false,
     position: { x: 0.5, y: 0.5 },
     scale: 1,
@@ -15,6 +23,25 @@ class MyEditor extends React.Component {
     preview: null,
     width: 200,
     height: 200,
+  }
+
+  handleNewImage = e => {
+    this.setState({ image: e.target.files[0] });
+  }
+
+  handleSave = data => {
+    // const img = this.editor.getImageScaledToCanvas().toDataURL();
+    const img = this.editor.getImage().toDataURL();
+
+    this.setState({
+      preview: {
+        img
+      }
+    });
+  }
+  
+  setEditorRef = editor => {
+    if (editor) this.editor = editor;
   }
 
   handleScale = e => {
@@ -31,10 +58,10 @@ class MyEditor extends React.Component {
     this.setState({ position })
   }
 
-  render() {
-    return (
+  render() {return (
       <div>
             <ReactAvatarEditor
+              ref={this.setEditorRef}
               scale={parseFloat(this.state.scale)}
               width={this.state.width}
               height={this.state.height}
@@ -45,8 +72,8 @@ class MyEditor extends React.Component {
               image={this.state.image}
               className="editor-canvas"
             />
-            <Box width={300}>
-                <input
+            <Box width={300} >
+              <input
                   name="scale2"
                   type="range"
                   onChange={this.handleScale}
@@ -55,6 +82,7 @@ class MyEditor extends React.Component {
                   step="0.01"
                   defaultValue="1"
               />
+              <br />
               <input
                 name="rotate"
                 type="range"
@@ -64,6 +92,22 @@ class MyEditor extends React.Component {
                 step="1"
                 defaultValue="0"
               />
+              <br/>
+                <label htmlFor="icon-button-file">
+                  <Input accept="image/*" id="icon-button-file" type="file" onChange={this.handleNewImage}/>
+                  <IconButton color="primary" aria-label="upload picture" component="span">
+                    <PhotoCamera />
+                  </IconButton>
+                </label>
+
+                <label >
+                  <Input type="button" onClick={this.handleSave} value="Preview" />
+                  <IconButton color="primary" aria-label="Save picture" component="span">
+                    <SaveIcon />
+                  </IconButton>
+                </label>
+                <br/>
+                {!!this.state.preview && <img alt="" src={this.state.preview.img} />}
             </Box>
           </div>
     )
