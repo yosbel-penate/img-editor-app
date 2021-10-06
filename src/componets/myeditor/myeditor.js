@@ -8,6 +8,7 @@ import Stack from '@mui/material/Stack';
 import SaveIcon from '@mui/icons-material/Save';
 import Viewer from 'react-viewer';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import GooglePayButton from '@google-pay/button-react';
 
 const Input = styled('input')({
   display: 'none',
@@ -119,6 +120,45 @@ class MyEditor extends React.Component {
                     <VisibilityIcon />
                   </IconButton>
                 </label>
+                <br/>
+                <GooglePayButton
+                  environment="TEST"
+                  paymentRequest={{
+                    apiVersion: 2,
+                    apiVersionMinor: 0,
+                    allowedPaymentMethods: [
+                      {
+                        type: 'CARD',
+                        parameters: {
+                          allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+                          allowedCardNetworks: ['MASTERCARD', 'VISA'],
+                        },
+                        tokenizationSpecification: {
+                          type: 'PAYMENT_GATEWAY',
+                          parameters: {
+                            gateway: 'example',
+                            gatewayMerchantId: 'exampleGatewayMerchantId',
+                          },
+                        },
+                      },
+                    ],
+                    merchantInfo: {
+                      merchantId: 'BCR2DN6T3PJ3P7LH',
+                      merchantName: 'LimonBank',
+                    },
+                    transactionInfo: {
+                      totalPriceStatus: 'FINAL',
+                      totalPriceLabel: 'Total',
+                      totalPrice: '1.00',
+                      currencyCode: 'USD',
+                      countryCode: 'US',
+                    },
+                  }}
+                  onLoadPaymentData={paymentRequest => {
+                    console.log('load payment data', paymentRequest);
+                  }}
+                />
+                <br/>
             </Box>
           </div>
     )
